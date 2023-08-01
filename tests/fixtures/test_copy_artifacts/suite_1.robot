@@ -1,11 +1,13 @@
 *** Settings ***
+Library    SeleniumLibrary
 Resource  keywords.robot
 Suite Setup  Create all artifact files
 
 *** Test Cases ***
 Links to screenshot directly in output_dir
-  Log screenshot  ${Screenshot in root}
-
+  open browser    https://stackoverflow.com/questions/46812155/how-to-run-headless-remote-chrome-using-robot-framework   gc
+  Capture Page Screenshot
+  
 Links to screenshots in subfolder
   Log screenshot  ${Screenshot in subfolder 1}
   Log screenshot  ${Screenshot in subfolder 2}
