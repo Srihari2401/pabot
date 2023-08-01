@@ -5,7 +5,7 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
     strategy:
       matrix:
         python: [3.8, 3.9, 3.11]
@@ -20,7 +20,17 @@ jobs:
         run: |
          pip install tox
          pip install -r ./requirements.txt
-
+      - name: Create folder for reports
+        run: mkdir reports
+        # run Robot Framework tests inside Docker container
+      - name: Run Robot Framework Tests
+        run: |
+            docker run \
+              -v ${PWD}/reports:/opt/robotframework/reports:Z \
+              -v ${PWD}/tests:/opt/robotframework/tests:Z \
+              -e ROBOT_OPTIONS="--variable DINOSAUR:Achillobator --variable NOT_DINOSAUR:kissa" \
+              --user $(id -u):$(id -g) \
+              ppodgorsek/robot-framework:latest
       - name: Run Tox
         # Run tox using the version of Python in `PATH`
         run: tox -e py
